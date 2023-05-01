@@ -22,9 +22,9 @@ import {
   export let Author
   
   
-  const fullnameRegex = /^[A-Z]{1}[a-z ]{3,}[ ]{1}[A-Z]{1}[a-z ]{3,}$/;
+  const fullnameRegex = /^[A-Z]{1}[a-z ]{1,}[ ]{1}[A-Z]{1}[a-z ]{2,}$/;
   const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-  const passwordRegex = /^[a-zA-Z0-9!@#$%^&*]{6,16}$/;;
+  const passwordRegex = /^(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/
   
   const Component = styled(Box)`
     width: 400px;
@@ -96,7 +96,7 @@ import {
   
     const [errorObj, setErrorObj] = React.useState({
       fullNameError: false,
-      fullNameError: "",
+      fullNameHelper: "",
       emailError: false,
       emailHelper: "",
       passwordError: false,
@@ -144,7 +144,7 @@ import {
         setErrorObj((prevState) => ({
           ...prevState,
           passwordError: true,
-          passwordHelper: "enter valid password",
+          passwordHelper: "Enter password contains at least small ,capital , special case and number with in range 8-16",
         }));
       } else {
         setErrorObj((prevState) => ({
@@ -162,9 +162,6 @@ import {
           dispatch(setAuthorName(signinObj.email))
           dispatch(addTokenToSystem(response.data.data))
           dispatch(setAuthenticated(true))
-  
-          // navigate("/dashboard")
-          // window.location.reload()
         }
         console.log("User Signed in Successfully...");
   
@@ -181,7 +178,7 @@ import {
         setErrorObj((prevState) => ({
           ...prevState,
           fullNameError: true,
-          fullNameHelper: "enter valid fullname",
+          fullNameHelper: "enter first letter of both first and last name capital and having a space in between",
         }));
       } else {
         setErrorObj((prevState) => ({
