@@ -1,0 +1,49 @@
+.header-main {
+    display: flex;
+    align-items: center;
+   
+    height: 60px; 
+   
+   
+}
+
+.header-main {
+    display: flex;
+}
+
+.meun-icn {
+    margin-left: 15px;
+}
+
+.img-logo-blog {
+    margin-left: 29px;
+
+}
+
+
+
+.rgt-icon-header {
+    margin-left: 710px;
+}
+
+.account-icon {
+    margin-left: 30px;
+}
+
+.addIcnBlock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: orange;
+    height: 35px;
+    width: 140px;
+    font-weight: 500;
+    border-radius: 90px;
+    box-shadow: 1px 2px 2px 1px rgba(73, 73, 73, 0.2);
+    background-color: rgb(254, 255, 255);
+    border: 1px solid rgb(227, 219, 219);
+}
+
+.addIcnBlock:hover {
+    background-color: blue;
+}
