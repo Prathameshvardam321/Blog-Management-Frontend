@@ -1,4 +1,5 @@
 import './App.css';
+
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import DashBoard from './Pages/DashBoard';
 import ViewBlog from './Blog/ViewBlog/ViewBlog';
@@ -10,6 +11,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import EditBlog from './Blog/BlogModel/EditBlog';
 import { setAuthenticated, addTokenToSystem } from './redux/Slice/Authentications';
+
 function App() {
 
   const dispatch = useDispatch()
@@ -29,6 +31,7 @@ function App() {
   })
 
   return (
+
     <>
       <BrowserRouter>
         <Routes>
@@ -58,7 +61,6 @@ function App() {
         </Routes>
       </BrowserRouter>
     </>
-
   );
 }
 
