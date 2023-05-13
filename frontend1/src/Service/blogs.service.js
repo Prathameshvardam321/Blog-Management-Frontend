@@ -123,3 +123,54 @@ export async function sendEmailForComment(authorName,obj,commentAuthor){
     let response = await axios.put(url+"post/sendEmail/"+authorName+"/"+commentAuthor, obj, headerConfig)
     return response
 }
+
+//"/replyComment/:author/:commentId"
+export async function replyToComment(authorName, obj, commentId, blogId) {
+    let response = await axios.post(url + "post/replyComment/" + authorName + "/" + commentId + "/" + blogId, obj, headerConfig)
+    return response
+}
+
+export async function collectAllReplies() {
+    let response = await axios.get(url + "post/getAllReply", headerConfig)
+    return response
+}
+
+export async function deleteReply(id) {
+    let response = await axios.delete(url + "post/deleteReply/" + id, headerConfig)
+    return response
+}
+
+export async function getIndividualReplyNumber(id) {
+    let response = await axios.get(url + "post/getIndividiualReply/" + id, headerConfig)
+    return response
+}
+
+
+export async function getReplyToNumber(id) {
+    let response = await axios.get(url + "post/getReplyToNumber/" + id, headerConfig)
+
+    return response
+}
+
+export async function likeComment(id, email) {
+    let response = await axios.put(url + "post/" + id + "/likeComment/" + email, headerConfig)
+    return response
+}
+
+//likeReplyOfComment
+export async function likeCommentReplyService(id, email) {
+    let response = await axios.put(url + "post/" + id + "/likeReplyOfComment/" + email, headerConfig)
+    return response
+}
+
+export async function getParticularComment(id) {
+    let response = await axios.get(url + "post/getParticularComment/" + id, headerConfig)
+
+    return response
+}
+
+
+export async function getParticularReplyComment(id) {
+    let response = await axios.get(url + "post/getParticularReplyComment/" + id, headerConfig)
+    return response
+}
