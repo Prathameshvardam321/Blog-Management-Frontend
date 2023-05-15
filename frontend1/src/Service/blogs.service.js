@@ -5,7 +5,7 @@ let headerConfig = {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
 }
-const url = "http://localhost:4000/api/v1/";
+const url = "http://localhost:6060/api/v1/";
 
 
 
@@ -32,17 +32,29 @@ export async function deleteBlogsService(id) {
     return response
 }
 
-export async function createPostService(id) {
+export async function createPostService(id, imgageUrl) {
+    if (imgageUrl) {
+        id.data = imgageUrl;
+    }
     let response = await axios.post(url + "post", id, headerConfig)
     return response
 }
-///:id/viewPost/:Email
-export async function viewPostService(id,email,obj) {
-    let response = await axios.post(`${url}post/${id}/viewPost/${email}`,obj, headerConfig)
-    console.log(`${url}post/${id}/viewPost/${email}`);
+
+
+export async function updatePostService(id, obj, imageUrl) {
+    if (imageUrl) {
+        obj.data = imageUrl
+    }
+    let response = await axios.put(url + "post/editpost/" + id, obj, headerConfig)
     return response
 }
 
+
+export async function viewPostService(id, email, obj) {
+    let response = await axios.post(`${url}post/${id}/viewPost/${email}`, obj, headerConfig)
+    console.log(`${url}post/${id}/viewPost/${email}`);
+    return response
+}
 
 export async function getPostByIdService(id) {
     let response = await axios.get(`${url}post/getPostById/${id}`, headerConfig)
@@ -74,57 +86,47 @@ export async function likeButtonService(id, email, obj) {
 }
 
 
+export async function arrangeByLikesSortHighToLowService() {
+    let response = await axios.get(url + "post/arrangeByLikesSortHighToLow", headerConfig)
+    return response
+}
 
-export async function findPostBySearchText(text){
-    let response = await axios.get(url+"post/getAllPost/" + text, headerConfig)
+
+export async function arrangeByLikesSortLowToHigh() {
+    let response = await axios.get(url + "post/arrangeByLikesSortLowToHigh", headerConfig)
     return response
 }
 
 
 
-export async function arrangeByLikesSortHighToLowService(){
-    let response = await axios.get(url+"post/arrangeByLikesSortHighToLow", headerConfig)
+export async function postComments(parentId, authorName, obj) {
+    let response = await axios.post(url + "post/comment/" + parentId + "/" + authorName, obj, headerConfig)
+    console.log(url + "post/comment/" + parentId + "/" + authorName);
     return response
 }
 
-
-export async function arrangeByLikesSortLowToHigh(){
-    let response = await axios.get(url+"post/arrangeByLikesSortLowToHigh", headerConfig)
-    return response
-}
-
-
-
-export async function postComments(parentId,authorName,obj){
-    let response = await axios.post(url+"post/comment/"+parentId+"/"+authorName,obj, headerConfig)
-    return response
-}
-
-export async function findAllComments(parentId){
-    let response = await axios.get(url+"post/comment/"+parentId, headerConfig)
+export async function findAllComments(parentId) {
+    let response = await axios.get(url + "post/comment/" + parentId, headerConfig)
     return response
 }
 
 
 
-export async function deleteComment(parentId){
-    let response = await axios.delete(url+"post/comment/"+parentId, headerConfig)
-    return response
-}
-
-export async function updatePostService(id,obj){
-    let response = await axios.put(url+"post/editpost/"+id, obj, headerConfig)
+export async function deleteComment(parentId) {
+    let response = await axios.delete(url + "post/comment/" + parentId, headerConfig)
     return response
 }
 
 
 
-export async function sendEmailForComment(authorName,obj,commentAuthor){
-    let response = await axios.put(url+"post/sendEmail/"+authorName+"/"+commentAuthor, obj, headerConfig)
+
+
+export async function sendEmailForComment(authorName, obj, commentAuthor) {
+    let response = await axios.post(url + "post/sendEmail/" + authorName + "/" + commentAuthor, obj, headerConfig)
     return response
 }
 
-//"/replyComment/:author/:commentId"
+
 export async function replyToComment(authorName, obj, commentId, blogId) {
     let response = await axios.post(url + "post/replyComment/" + authorName + "/" + commentId + "/" + blogId, obj, headerConfig)
     return response
@@ -148,7 +150,6 @@ export async function getIndividualReplyNumber(id) {
 
 export async function getReplyToNumber(id) {
     let response = await axios.get(url + "post/getReplyToNumber/" + id, headerConfig)
-
     return response
 }
 
@@ -157,7 +158,7 @@ export async function likeComment(id, email) {
     return response
 }
 
-//likeReplyOfComment
+
 export async function likeCommentReplyService(id, email) {
     let response = await axios.put(url + "post/" + id + "/likeReplyOfComment/" + email, headerConfig)
     return response
@@ -165,7 +166,6 @@ export async function likeCommentReplyService(id, email) {
 
 export async function getParticularComment(id) {
     let response = await axios.get(url + "post/getParticularComment/" + id, headerConfig)
-
     return response
 }
 
@@ -174,3 +174,4 @@ export async function getParticularReplyComment(id) {
     let response = await axios.get(url + "post/getParticularReplyComment/" + id, headerConfig)
     return response
 }
+
