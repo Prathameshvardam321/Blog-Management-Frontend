@@ -107,6 +107,8 @@ useEffect(()=>{
         
 
             <div style={{ height: '152px', overflow: 'hidden' }}>
+            <div style={{textAlign:'center',background:'black'}}> <p style={{writingMode:'vertical-lr',background:'black', opacity:"40%" ,height:'152px', margin:'0px 0px 0px 0px',padding:'0px 0px 0px 0px',color:'white', fontSize:'25px',fontWeight:'bolder', position:'absolute'}}>{props.Type}</p></div>
+      
               <CardMedia
                 onClick={onClickOnView}
                 component="img"
