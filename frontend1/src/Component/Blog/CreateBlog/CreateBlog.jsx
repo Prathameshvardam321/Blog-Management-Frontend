@@ -16,6 +16,7 @@ export default function CreateBlog() {
     const navigate = useNavigate()
     const propValue = "Create"
     const titleregex = /^.{3,}$/
+    const descRegex = /^[\s\S]{3,}$/
     const [blog, setBlog] = useState({
         Title: "", Description: "", Type: "Other"
     })
@@ -25,7 +26,7 @@ export default function CreateBlog() {
     })
 
     const valueOfType = useSelector((c) => {
-        console.log(c.allBlogReducer.typeOfBlog)
+       
         return c.allBlogReducer.typeOfBlog
     })
 
@@ -40,20 +41,19 @@ export default function CreateBlog() {
         setBlog((prev) => ({
             ...prev, Title: e.target.value
         }))
-        console.log(e.target.value);
-        console.log(titleregex.test(blog.Title));
+       
     }
     const takeDescription = (e) => {
         setBlog((prev) => ({
             ...prev, Description: e.target.value
         }))
-        console.log(e.target.value);
+       
     }
 
     const onClickPublish = async () => {
         console.log(blog);
         const titleTest = titleregex.test(blog.Title)
-        const desTest = titleregex.test(blog.Description)
+        const desTest = descRegex.test(blog.Description);
         if (titleTest) {
             setRegex((prev) => ({
                 ...prev, titleError: false, titleHelper: ""
