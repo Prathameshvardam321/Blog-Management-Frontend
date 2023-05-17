@@ -25,6 +25,7 @@ import { Edit } from "@mui/icons-material";
 import { Link } from 'react-router-dom';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { likeButtonService } from "../../Services/blogs.service";
+import toaster from '../../Toaster'
 import iamge from '../../assest/blog12.jpg'
 function ViewBlog(props) {
   const [data1, setData1] = useState();
@@ -55,11 +56,6 @@ function ViewBlog(props) {
   const { idParams } = useParams()
   const authorName = localStorage.getItem('author')
   const navigate = useNavigate()
-  const onClickDeleteIcon = async () => {
-    const data = await deleteBlogsService(idParams)
-    console.log(data);
-    navigate("/dashboard")
-  }
 
   const [obj, setObj] = useState({
     Title: "",
@@ -102,6 +98,12 @@ function ViewBlog(props) {
       
     }
     fetch()
+  }
+
+  const onClickDeleteIcon = async () => {
+    const data = await deleteBlogsService(obj.underId)
+    navigate("/dashboard")
+    toaster("error",data.data.message)
   }
   const [visible, setVisible] = useState(false)
   const seeComments = () => {
