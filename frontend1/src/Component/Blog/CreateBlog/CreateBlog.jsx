@@ -14,9 +14,10 @@ import Header from '../../Header/Header';
 
 export default function CreateBlog() {
     const navigate = useNavigate()
+    const [imageUrl, setImageUrl] = useState(null);
     const propValue = "Create"
-    const titleregex = /^.{3,}$/
-    const descRegex = /^[\s\S]{3,}$/
+    const titleregex = /^.{10,}$/
+    const descRegex = /^[\s\S]{10,}$/
     const [blog, setBlog] = useState({
         Title: "", Description: "", Type: "Other"
     })
@@ -51,99 +52,160 @@ export default function CreateBlog() {
     }
 
     const onClickPublish = async () => {
-        console.log(blog);
-        const titleTest = titleregex.test(blog.Title)
+        const titleTest = titleregex.test(blog.Title);
         const desTest = descRegex.test(blog.Description);
         if (titleTest) {
-            setRegex((prev) => ({
-                ...prev, titleError: false, titleHelper: ""
-            }))
+          setRegex((prev) => ({
+            ...prev,
+            titleError: false,
+            titleHelper: "",
+          }));
+        } else {
+          setRegex((prev) => ({
+            ...prev,
+            titleError: true,
+            titleHelper: "Blog title must contain at least 10 letters.",
+          }));
         }
-        else {
-            setRegex((prev) => ({
-                ...prev, titleError: true, titleHelper: "Blog title must contain at least 3 letters."
-            }))
-        }
-
+    
         if (desTest) {
-            setRegex((prev) => ({
-                ...prev, descriptionError: false, descriptionHelper: ""
-            }))
+          setRegex((prev) => ({
+            ...prev,
+            descriptionError: false,
+            descriptionHelper: "",
+          }));
+        } else {
+          setRegex((prev) => ({
+            ...prev,
+            descriptionError: true,
+            descriptionHelper: "Blog description must contain at least 10 letters.",
+          }));
         }
-        else {
-            setRegex((prev) => ({
-                ...prev, descriptionError: true, descriptionHelper: "Blog description must contain at least 3 letters."
-            }))
+        if (imageUrl && desTest && titleTest) {
+    
+          const time = Date.now();
+          const imageRef = ref(storage, `images/blogs/${time}`);
+          uploadBytes(imageRef, imageUrl)
+            .then((res) => getDownloadURL(res.ref))
+            .then((err) => {
+              const dbCall = async () => {
+                const response = await createPostService(blog, err);
+              
+                if (response) {
+                  navigate(`/createPostEmoji/${response.data.data._id}`)
+                }
+              };
+              dbCall();
+            });
+        } else if (desTest && titleTest) {
+    
+          const response = await createPostService(blog);
+
+          if (response) {
+            navigate(`/createPostEmoji/${response.data.data._id}`)
+          }
         }
-
-
-        const response = await createPostService(blog)
-        console.log(response.data.code);
-        if (response.data.code == 201) {
-            navigate("/dashboard")
-        }
-    }
-
-
+    
+      }
+    
+    
+      const handlePhoto = (e) => {
+        setImageUrl(e.target.files[0]);
+      };
 
     return (
         <>
-            <div className='createblog-ui-main'>
-                <Header propValue={propValue} />
-
-                <div className='lower-part'>
-                    <div className='createblog-left-content'>
-                        <div className='title-box'>
-
-                            <TextField
-                                style={{ width: '923px', color: 'orange', marginTop: '10px', marginLeft: '15px' }}
-                                required
-                                id="filled-required"
-                                label="Title"
-                                variant="filled"
-                                value={blog.Title}
-                                onChange={takeTitle}
-                                error={regex.titleError}
-                                helperText={regex.titleHelper}
-                            />
-
-
-                        </div>
-
-                        <div className='decription-box'>
-                            <div>
-
-                                <TextField
-                                    id="description"
-                                    required
-                                    multiline
-                                    name="description"
-                                    value={blog.Description}
-                                    onChange={takeDescription}
-                                    rows={15}
-                                    error={regex.descriptionError}
-                                    helperText={regex.descriptionHelper}
-                                    style={{ width: '720px', border: '1px solid whitesmoke' }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className='rgt-lowerpart'>
-                        <div className='button-rgt-part'>
-                            <div className='forselctsmall'>
-                                <SelectSmall />
-                            
-                            </div>
-
-                            <div className='publishBtm'>
-                                <Button onClick={onClickPublish} variant="contained" style={{ backgroundColor: 'orange', height: '42px', marginLeft: '0px', width: '156px' }} endIcon={<SendIcon />}>
-                                    Publish
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <Header propValue={propValue} />
+      <div className="createblog-ui-main">
+        <div style={{ width: '70vw' }} >
+          <div style={{ height: '20%', width: '100%', paddingTop: '2rem' }}>
+            <img src={data ? data : img} style={{ height: '20rem' }} width={'100%'} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ margin: '10px' }}>
+              <SelectSmall />
             </div>
-        </>
+            <div className="publishBtm">
+              <Button
+                onClick={onClickPublish}
+                variant="contained"
+                style={{
+                  backgroundColor: "orange",
+                  height: "42px",
+                  marginLeft: "0px",
+                  width: "156px",
+                }}
+                endIcon={<SendIcon />}
+              >
+                Publish
+              </Button>
+            </div>
+          </div>
+          <div className="forselctsmall">
+            <input style={{ paddingTop: '5px', paddingLeft: '2px', margin: '10px' }}
+              type="file"
+              accept=".png, .jpg, .jpeg"
+              name="photo"
+              onChange={handlePhoto}
+            />
+          </div>
+          <div className="title-box" style={{
+            display: "flex",
+            flexdirection: "row",
+            justifycontent: "flex-start",
+            alignitems: "flex-start",
+            border: "none",
+            color: "orange",
+            outline: 'none'
+          }}>
+            <TextField
+              style={{
+                display: "flex",
+                flexdirection: "row",
+                justifycontent: "flex-start",
+                alignitems: "flex-start",
+                border: "none",
+                marginTop: "2rem",
+                outline: 'none',
+                boxShadow: 'none'
+              }}
+              placeholder="Title"
+              variant="standard"
+              required
+              value={blog.Title}
+              onChange={takeTitle}
+              error={regex.titleError}
+              helperText={regex.titleHelper}
+            />
+          </div>
+          <div className="decription-box">
+            <div>
+              <TextField
+                placeholder="Write your story..."
+                multiline
+                // maxRows={4}
+                variant="standard"
+                required
+                value={blog.Description}
+                onChange={takeDescription}
+                rows={15}
+                error={regex.descriptionError}
+                helperText={regex.descriptionHelper}
+                style={{ height: '10rem', width: '100%', marginTop: "2rem", border: 'none', outline: 'none', boxShadow: 'none' }}
+                InputProps={{
+                  style: {
+                    outline: "none",
+                  },
+                }}
+              />
+            </div>
+
+          </div>
+        </div>
+
+
+      </div>
+
+    </>
     )
 }
