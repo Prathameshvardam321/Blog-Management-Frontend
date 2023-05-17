@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import image from '../../assest/logo_blogger_40px_2x.png'
-
+import toaster from '../../../Toaster'
 import { createPostService } from '../../Services/blogs.service';
 import SelectSmall from '../../Utils/tab';
 import { useNavigate } from 'react-router-dom';
@@ -88,6 +88,7 @@ export default function EditBlog() {
         const response = await updatePostService(id,blog)
       
         if (response.data.code == 200) {
+            toaster("info",response.data.message)
             navigate("/dashboard")
         }
     }

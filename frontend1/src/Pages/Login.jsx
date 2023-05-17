@@ -18,7 +18,7 @@ import {
   import { useDispatch } from "react-redux";
   import { setAuthorName } from "../../redux/Slice/HomeDashboardSlice";
   import { addTokenToSystem, setAuthenticated } from "../../redux/Slice/Authentications";
-  
+  import { toaster } from "../Toaster";
   export let Author
   
   
@@ -215,11 +215,25 @@ import {
         }));
       }
       if (fullnameTest === true && emailTest === true && passwordTest === true) {
+        let response
+        try {
+          response = await signedup(signupObj);
+         
+        } catch (error) {
+        if( error.response.data.message){
+          setErrorObj((prevState) => ({
+            ...prevState,
+            emailError: true,
+            emailHelper:error.response.data.message ,
+          }));
+        }
+        }
+      
+        if (response) {
+          toaster("info",response.data.message)
+          toggleSignup()
+        }
   
-        let response = await signedup(signupObj);
-        console.log(response.data.data);
-        console.log("User Signed Up Successfully...");
-        toggleSignup()
       }
     };
     return (
@@ -261,21 +275,7 @@ import {
             </Wrapper>
           ) : (
             <Wrapper>
-              {/* Select user as */}
-              {/* <Select
-                sx={{ width: "200px", margin: "auto", }}
-                labelId="selectuser"
-                id="select"
-                value={selectuser}
-                label="selectuser"
-                onChange={handleChange}
-              >
-  
-                {" "}
-                <MenuItem value={10}>Admin</MenuItem>
-                <MenuItem value={20}>User</MenuItem>
-              </Select> */}
-  
+              
               <TextField
                 label="Enter your fullname"
                 variant="standard"
