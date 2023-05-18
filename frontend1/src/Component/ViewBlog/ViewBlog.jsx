@@ -84,7 +84,6 @@ function ViewBlog(props) {
 
   const likeButton = async () => {
     const data = await likeButtonService(id, authorName)
-    console.log("DARARATAF....",data);
     if (data.data.data.Likes.includes(authorName)) {
       setIsLiked(true)
       setObj((prev)=>({
@@ -144,26 +143,36 @@ function ViewBlog(props) {
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 -{obj.Author}
               </div>
+              
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "flex-end",
                   alignItems: "center",
                 }}
+                className="editDeleteInViewBlog"
               >
-                <div className="con-par2" style={{ marginLeft: "23px" }}>
-                  {" "}
-                  <VisibilityIcon style={{ marginRight: "5px" }} />
-                  {obj.Views}
+                 {authorName == obj.Author ?   
+                  <div  className="typeInViewBlog">
+                  {obj.Type}
+                </div> :  <div  className="typeInViewBlog" style={{marginBottom:'10px'}}>
+                  {obj.Type}
                 </div>
+                }
+               {authorName == obj.Author?
+                <div className="con-par2" >
+                <VisibilityIcon style={{ marginRight: "5px" }} />
+                {obj.Views}
+              </div>:
+               <div className="con-par2" style={{marginLeft:'43px'}}>
+                <VisibilityIcon style={{ marginRight: "5px" }} />
+                {obj.Views}
+              </div>
+               }
+               
                 <div>
                   <IconButton
                     aria-label="more"
-                    id="long-button"
-                    aria-controls={open ? "long-menu" : undefined}
-                    aria-expanded={open ? "true" : undefined}
-                    aria-haspopup="true"
-                    onClick={handleClick}
+                    id="long-button"  
                   >
                     {authorName == obj.Author ? <div style={{ display: 'flex' }}>
                       <div > <DeleteForever onClick={onClickDeleteIcon} className='deleteBtnclass' /></div>
