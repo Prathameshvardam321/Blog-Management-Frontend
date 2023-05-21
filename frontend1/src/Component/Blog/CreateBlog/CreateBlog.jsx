@@ -11,110 +11,111 @@ import SelectSmall from '../../Utils/tab';
 import { useNavigate } from 'react-router-dom';
 import { Author } from '../../Pages/LoginPage/Login';
 import Header from '../../Header/Header';
-
+import img from "../../assest/otherOption.jpg"
+import { setIsPublishValue } from "../../redux/Slice/HomeDashboardSlice";
 export default function CreateBlog() {
-    const navigate = useNavigate()
-    const [imageUrl, setImageUrl] = useState(null);
-    const propValue = "Create"
-    const titleregex = /^.{10,}$/
-    const descRegex = /^[\s\S]{10,}$/
-    const [blog, setBlog] = useState({
-        Title: "", Description: "", Type: "Other"
-    })
-    const [Image, setImage] = useState('')
-    const [regex, setRegex] = useState({
-        titleError: false, descriptionError: false, titleHelper: "", descriptionHelper: ""
-    })
+  const navigate = useNavigate()
+  const [imageUrl, setImageUrl] = useState(null);
+  const propValue = "Create"
+  const titleregex = /^.{10,}$/
+  const descRegex = /^[\s\S]{10,}$/
+  const [blog, setBlog] = useState({
+    Title: "", Description: "", Type: "Other"
+  })
+  const [Image, setImage] = useState('')
+  const [regex, setRegex] = useState({
+    titleError: false, descriptionError: false, titleHelper: "", descriptionHelper: ""
+  })
 
-    const valueOfType = useSelector((c) => {
-       
-        return c.allBlogReducer.typeOfBlog
-    })
+  const valueOfType = useSelector((c) => {
 
-    useEffect(() => {
-        setBlog((prev) => ({
-            ...prev, Type: valueOfType
-        }))
-    }, [valueOfType])
+    return c.allBlogReducer.typeOfBlog
+  })
+
+  useEffect(() => {
+    setBlog((prev) => ({
+      ...prev, Type: valueOfType
+    }))
+  }, [valueOfType])
 
 
-    const takeTitle = (e) => {
-        setBlog((prev) => ({
-            ...prev, Title: e.target.value
-        }))
-       
+  const takeTitle = (e) => {
+    setBlog((prev) => ({
+      ...prev, Title: e.target.value
+    }))
+
+  }
+  const takeDescription = (e) => {
+    setBlog((prev) => ({
+      ...prev, Description: e.target.value
+    }))
+
+  }
+
+  const onClickPublish = async () => {
+    const titleTest = titleregex.test(blog.Title);
+    const desTest = descRegex.test(blog.Description);
+    if (titleTest) {
+      setRegex((prev) => ({
+        ...prev,
+        titleError: false,
+        titleHelper: "",
+      }));
+    } else {
+      setRegex((prev) => ({
+        ...prev,
+        titleError: true,
+        titleHelper: "Blog title must contain at least 10 letters.",
+      }));
     }
-    const takeDescription = (e) => {
-        setBlog((prev) => ({
-            ...prev, Description: e.target.value
-        }))
-       
+
+    if (desTest) {
+      setRegex((prev) => ({
+        ...prev,
+        descriptionError: false,
+        descriptionHelper: "",
+      }));
+    } else {
+      setRegex((prev) => ({
+        ...prev,
+        descriptionError: true,
+        descriptionHelper: "Blog description must contain at least 10 letters.",
+      }));
     }
+    if (imageUrl && desTest && titleTest) {
+      await dispatch(setIsPublishValue(true))
+      const time = Date.now();
+      const imageRef = ref(storage, `images/blogs/${time}`);
+      uploadBytes(imageRef, imageUrl)
+        .then((res) => getDownloadURL(res.ref))
+        .then((err) => {
+          const dbCall = async () => {
+            const response = await createPostService(blog, err);
+            dispatch(setIsPublishValue(false))
+            if (response) {
+              navigate(`/createPostEmoji/${response.data.data._id}`)
+            }
+          };
+          dbCall();
+        });
+    } else if (desTest && titleTest) {
 
-    const onClickPublish = async () => {
-        const titleTest = titleregex.test(blog.Title);
-        const desTest = descRegex.test(blog.Description);
-        if (titleTest) {
-          setRegex((prev) => ({
-            ...prev,
-            titleError: false,
-            titleHelper: "",
-          }));
-        } else {
-          setRegex((prev) => ({
-            ...prev,
-            titleError: true,
-            titleHelper: "Blog title must contain at least 10 letters.",
-          }));
-        }
-    
-        if (desTest) {
-          setRegex((prev) => ({
-            ...prev,
-            descriptionError: false,
-            descriptionHelper: "",
-          }));
-        } else {
-          setRegex((prev) => ({
-            ...prev,
-            descriptionError: true,
-            descriptionHelper: "Blog description must contain at least 10 letters.",
-          }));
-        }
-        if (imageUrl && desTest && titleTest) {
-    
-          const time = Date.now();
-          const imageRef = ref(storage, `images/blogs/${time}`);
-          uploadBytes(imageRef, imageUrl)
-            .then((res) => getDownloadURL(res.ref))
-            .then((err) => {
-              const dbCall = async () => {
-                const response = await createPostService(blog, err);
-              
-                if (response) {
-                  navigate(`/createPostEmoji/${response.data.data._id}`)
-                }
-              };
-              dbCall();
-            });
-        } else if (desTest && titleTest) {
-    
-          const response = await createPostService(blog);
-
-          if (response) {
-            navigate(`/createPostEmoji/${response.data.data._id}`)
-          }
-        }
-    
+      const response = await createPostService(blog);
+      dispatch(setIsPublishValue(false))
+      if (response) {
+        navigate(`/createPostEmoji/${response.data.data._id}`)
       }
-    
-    
-      const handlePhoto = (e) => {
-        setImageUrl(e.target.files[0]);
-      };
+    }
 
-    return (
-        <>
+  }
+
+
+  const handlePhoto = (e) => {
+    setImageUrl(e.target.files[0]);
+  };
+
+  return (
+    <>
       <Header propValue={propValue} />
       <div className="createblog-ui-main">
         <div style={{ width: '70vw' }} >
@@ -207,5 +208,5 @@ export default function CreateBlog() {
       </div>
 
     </>
-    )
+  )
 }
