@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-// import getAllBlogs from "../../Services/blogs.service";
-const initialState = { allPosts: [], typeOfBlog: '', numberOfLikes: 0 }
+const initialState = { allPosts: [], typeOfBlog: '', numberOfLikes: 0, numberOfviews: 0, typeOfBlogInDashBoard: 'All', authorName: localStorage.getItem('author'), forSearchType: "Home" ,relevanceType:"All" ,isPublish :false }
 const allBlogs = createSlice({
     name: 'all-post-blogs',
     initialState,
@@ -28,10 +27,13 @@ const allBlogs = createSlice({
         },
         setrelevanceType: (state, actions) => {
             state.relevanceType = actions.payload
+        },
+        setIsPublishValue : (state, actions) => {
+            state.isPublish = actions.payload
         }
 
     }
 })
 
-export const { getAllBlogs, selectTypeOfBlog, getNumberOfLikes, selectTypeOfBlogInDashBoard, setAuthorName, setForSearchType, setrelevanceType } = allBlogs.actions
+export const { getAllBlogs, selectTypeOfBlog, getNumberOfLikes, selectTypeOfBlogInDashBoard, setAuthorName, setForSearchType, setrelevanceType ,setIsPublishValue } = allBlogs.actions
 export default allBlogs.reducer
